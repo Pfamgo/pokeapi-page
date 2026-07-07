@@ -9,7 +9,11 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "*").split(",")
+CSRF_TRUSTED_ORIGINS = (
+    os.environ["DJANGO_CSRF_TRUSTED_ORIGINS"].split(",")
+    if "DJANGO_CSRF_TRUSTED_ORIGINS" in os.environ
+    else []
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
