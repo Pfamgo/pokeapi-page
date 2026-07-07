@@ -1,0 +1,46 @@
+{% extends "pokedex/base.html" %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+        <h1 class="text-3xl font-bold text-center mb-6">Iniciar Sesión</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition mt-2">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <p class="text-center text-gray-500 dark:text-gray-400 mt-4">
+            ¿No tienes cuenta?
+            <a href="{% url 'register' %}" class="text-red-500 hover:text-red-400">Regístrate</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        if (!el.classList.contains('w-full')) {
+            el.classList.add('w-full', 'px-4', 'py-2', 'rounded-lg', 'border', 'border-gray-300', 'dark:border-gray-600', 'bg-white', 'dark:bg-gray-700', 'focus:ring-2', 'focus:ring-red-500', 'focus:outline-none');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "pokedex/base.html" %}
+{% load static %}
+
+{% block title %}Explorador Pokémon{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-4xl font-bold text-center mb-2">Pokédex</h1>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-6">
+        Explora todos los Pokémon disponibles
+    </p>
+
+    <form method="get" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-semibold mb-1">Buscar</label>
+                <input type="text" name="q" value="{{ form.q.value|default:'' }}"
+                       placeholder="Nombre o # número..."
+                       class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">Tipo</label>
+                <select name="type" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <option value="">Todos los tipos</option>
+                    {% for t in form.type.field.queryset %}
+                        <option value="{{ t.pk }}" {% if form.type.value|stringformat:"s" == t.pk|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">Región</label>
+                <select name="region" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <option value="">Todas las regiones</option>
+                    {% for r in form.region.field.queryset %}
+                        <option value="{{ r.pk }}" {% if form.region.value|stringformat:"s" == r.pk|stringformat:"s" %}selected{% endif %}>{{ r.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg transition">
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for pokemon in pokemon_list %}
+        <a href="{% url 'pokemon_detail' pokemon.id %}" class="block bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-shadow overflow-hidden group">
+            <div class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 p-4 flex items-center justify-center h-48">
+                {% if pokemon.image_url %}
+                    <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}" class="h-36 w-36 object-contain group-hover:scale-110 transition-transform duration-300" loading="lazy">
+                {% endif %}
+            </div>
+            <div class="p-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400 font-mono">#{{ pokemon.pokedex_number|stringformat:"04d" }}</p>
+                <h3 class="text-lg font-bold capitalize mb-2">{{ pokemon.name }}</h3>
+                <div class="flex flex-wrap gap-1 mb-2">
+                    {% for type in pokemon.types.all %}
+                        <span class="px-2 py-0.5 rounded-full text-white text-xs font-semibold" style="background-color: {{ type.color }};">
+                            {{ type.name }}
+                        </span>
+                    {% endfor %}
+                </div>
+                {% if pokemon.region %}
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ pokemon.region.name }}</p>
+                {% endif %}
+            </div>
+        </a>
+    {% empty %}
+        <div class="col-span-full text-center py-16 text-gray-500 dark:text-gray-400">
+            <p class="text-6xl mb-4">🔍</p>
+            <p class="text-xl">No se encontraron Pokémon con esos filtros.</p>
+            <a href="{% url 'home' %}" class="text-red-500 hover:underline mt-2 inline-block">Limpiar filtros</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

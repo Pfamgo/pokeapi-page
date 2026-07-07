@@ -1,0 +1,81 @@
+{% extends "pokedex/base.html" %}
+
+{% block title %}{{ pokemon.name }} - #{{ pokemon.pokedex_number|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <a href="{% url 'home' %}" class="inline-flex items-center text-red-500 hover:text-red-400 mb-6 transition">
+        &larr; Volver a la Pokédex
+    </a>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+            <div class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 p-8 flex items-center justify-center">
+                {% if pokemon.image_url %}
+                    <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}" class="h-64 w-64 object-contain">
+                {% endif %}
+            </div>
+            <div class="p-8">
+                <p class="text-lg text-gray-500 dark:text-gray-400 font-mono">#{{ pokemon.pokedex_number|stringformat:"04d" }}</p>
+                <h1 class="text-4xl font-bold capitalize mb-4">{{ pokemon.name }}</h1>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    {% for type in pokemon.types.all %}
+                        <span class="px-4 py-1.5 rounded-full text-white font-semibold" style="background-color: {{ type.color }};">
+                            {{ type.name }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                {% if pokemon.region %}
+                    <p class="text-gray-500 dark:text-gray-400 mb-2">
+                        <span class="font-semibold text-gray-700 dark:text-gray-300">Región:</span> {{ pokemon.region.name }}
+                    </p>
+                {% endif %}
+
+                <div class="grid grid-cols-2 gap-4 my-6">
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Altura</p>
+                        <p class="text-xl font-bold">{{ pokemon.height|floatformat:1 }} m</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Peso</p>
+                        <p class="text-xl font-bold">{{ pokemon.weight|floatformat:1 }} kg</p>
+                    </div>
+                </div>
+
+                {% if pokemon.evolves_from %}
+                    <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Evoluciona de</p>
+                        <a href="{% url 'pokemon_detail' pokemon.evolves_from.id %}" class="text-red-500 hover:text-red-400 font-semibold capitalize">
+                            {{ pokemon.evolves_from.name }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if evolution_pokemon|length > 1 %}
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Cadena Evolutiva</h2>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                {% for evo in evolution_pokemon %}
+                    <a href="{% url 'pokemon_detail' evo.id %}" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center hover:shadow-lg transition {% if evo.id == pokemon.id %}ring-2 ring-red-500{% endif %}">
+                        <div class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-lg p-2 mb-2">
+                            {% if evo.image_url %}
+                                <img src="{{ evo.image_url }}" alt="{{ evo.name }}" class="h-20 w-20 object-contain">
+                            {% endif %}
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-mono">#{{ evo.pokedex_number|stringformat:"04d" }}</p>
+                        <p class="text-sm font-semibold capitalize">{{ evo.name }}</p>
+                    </a>
+                    {% if not forloop.last %}
+                        <span class="text-2xl text-gray-400">&rarr;</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
