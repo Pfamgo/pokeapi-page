@@ -1,18 +1,18 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-s)ferpm)v!0ot31%aqm_@0glo3!3j3666mr*ckc!i_y=jl2qlx"
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-s)ferpm)v!0ot31%aqm_@0glo3!3j3666mr*ckc!i_y=jl2qlx")
 
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,*.onrender.com").split(",")
 
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://localhost:8000',
-    'https://127.0.0.1:8000',
-]
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    "https://localhost:8000,https://127.0.0.1:8000,https://*.onrender.com",
+).split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -63,26 +63,15 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 LANGUAGE_CODE = "es"
-
 TIME_ZONE = "America/Santiago"
-
 USE_I18N = True
-
 USE_TZ = True
 
 STATIC_URL = "static/"

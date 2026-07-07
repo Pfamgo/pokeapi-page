@@ -1,11 +1,14 @@
 # Despliegue en Render
 
-## Requisitos
+## Opción 1: Usando render.yaml (recomendado)
 
-- Cuenta en [Render](https://render.com)
-- Repositorio conectado a Render
+El repositorio incluye un archivo `render.yaml` con toda la configuración.
 
-## Pasos
+1. En Render, ve a **Dashboard > New > Blueprint**
+2. Conecta el repositorio
+3. Render detectará automáticamente el `render.yaml` y configurará el servicio
+
+## Opción 2: Web Service manual
 
 1. **Crear Web Service**
    - Conectar repositorio de GitHub
@@ -25,24 +28,15 @@
    - **Plan:** Free (o Starter para mejor rendimiento)
 
 3. **Variables de Entorno**
-   - `PYTHON_VERSION`: `3.12.1`
-   - `DJANGO_SETTINGS_MODULE`: `pokeview.settings`
-   - `DISABLE_COLLECTSTATIC`: `1` (si se maneja manualmente)
+   | Variable | Valor |
+   |---|---|
+   | `DJANGO_SECRET_KEY` | (generado automáticamente) |
+   | `DJANGO_DEBUG` | `False` |
+   | `DJANGO_ALLOWED_HOSTS` | `.onrender.com,localhost,127.0.0.1` |
+   | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://*.onrender.com` |
+   | `PYTHON_VERSION` | `3.12.1` |
 
-4. **Persistencia de SQLite**
-   Render usa discos efímeros. Para persistencia en Free tier:
-   - Los datos se mantienen mientras el servicio no se reinicie
-   - Para persistencia real, migrar a **PostgreSQL** (recomendado para producción)
-   - Alternativa: Usar [Render Disks](https://render.com/docs/disks) (solo planes pagos)
+## Persistencia de SQLite
 
-## Archivos importantes
-
-- `requirements.txt` - Dependencias del proyecto
-- `Procfile` (opcional) - Alternativa al Start Command
-- `runtime.txt` (opcional) - Especificar versión de Python
-
-## Procfile (alternativa)
-
-```
-web: gunicorn pokeview.wsgi:application --workers=4 --timeout=120
-```
+Render usa discos efímeros. Los datos se pierden al reiniciar el servicio.
+Para persistencia real, migrar a PostgreSQL.
