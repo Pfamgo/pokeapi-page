@@ -7,12 +7,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-s)ferpm)v!0ot3
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,*.onrender.com").split(",")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
-CSRF_TRUSTED_ORIGINS = os.environ.get(
-    "DJANGO_CSRF_TRUSTED_ORIGINS",
-    "https://localhost:8000,https://127.0.0.1:8000,https://*.onrender.com",
-).split(",")
+CSRF_TRUSTED_ORIGINS = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "*").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
